@@ -5,6 +5,9 @@
 > [!IMPORTANT]
 > **频道表在首次准备资源时就要选对。** `prepare` 显式传入 `--channel-info`，使用[完整的 120 频道外部 ETC](../go-server/internal/services/dnfbridge/testdata/channel_info.etc)并按[频道表说明](CHANNEL_TABLE_DEPLOYMENT.md)核对。PVF 内置表曾导致无法完成登录；已有服和 PVF 更新都保留已选外部表，检查运行进程真正加载的文件。
 
+> [!NOTE]
+> **Docker 配置有公开参考可直接交给 Agent。** 阅读[运行配置与脱敏说明](DOCKER_RUNTIME_REFERENCE.md)，下载[环境配置参考](../deploy/templates/docker-server.redacted.env)，核对 `DNFBRIDGE_GAME_UPPER_*`、资源路径及实际进程值。普通／魂大会设为 `dungeon_tournament: "vendor"`，赛马保持关闭。
+
 你准备服务器、客户端和想法，Agent 负责读源码、运行命令、配置服务和排查问题。第一步的目标很具体：让自己的账号能进入游戏，创建角色，打一张图，退出后还能读到存档。
 
 ## 当前活动开关与赛马关闭方法
@@ -197,7 +200,9 @@ sh deploy/docker/manage.sh prepare --pvf "/srv/dnf-assets/Script.pvf" --channel-
 sh deploy/docker/manage.sh prepare --channel-info "/srv/dnf-assets/channel_info.etc"
 ```
 
-**启动前，把 `runtime/docker/instance.json` 中的 `joust_event_enabled` 设为 `false`。** 复用旧数据库时，另按[活动开关说明](#已有服检查保存值实际生效值和目录)确认 2365 的持久化设置已关闭。然后启动并检查：
+**启动前，把 `runtime/docker/instance.json` 中的 `joust_event_enabled` 设为 `false`。** 复用旧数据库时，另按[活动开关说明](#已有服检查保存值实际生效值和目录)确认 2365 的持久化设置已关闭。
+
+同一实例源中设置 `dungeon_tournament` 为 `"vendor"`，启用普通与魂大会赛程；协议字段及生成方式见[运行配置参考](DOCKER_RUNTIME_REFERENCE.md#从实例源生成配置)。然后启动并检查：
 
 ```sh
 sh deploy/docker/manage.sh up
